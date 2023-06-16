@@ -1,0 +1,68 @@
+---
+title: "Deep learning for land use modeling"
+author: "Ivann Schlosser"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Introduction
+
+## Deep learning principles
+
+Minimizing the loss function of an output from a sequential application of *affine* inputs to an *activation function*.
+The addition of layers of transformation allows to create a *deep* structure of the processing of the inputs, which increases the predictive capabilities for non-linearities. 
+
+* loss function: a function that tends to 0 as the output values tend to the inputs. 
+* affine transformation: $y=ax+b$, where $a,b$ are fixed. 
+* activation function: non linearity, that simulates the binary nature of an activation, $y=tanh(x)$ for example. 
+* processing layers: pilling of layers generating outputs from activations and transmitting them to the next layer. 
+* 
+
+Segmentation accuracy for predicting a class *c* is defined as: 
+
+$$
+SA=\frac{N_{Y=c,\hat{Y}=c}}{ N_{Y=c,\hat{Y} = c} +  N_{Y=c,\hat{Y} \neq c} +  N_{Y\neq c,\hat{Y} = c} }
+$$
+
+# Ideas for deep learning methods applications
+
+* Predicting land use, or more generally characteristics of space, on a grid.
+  - train on a full raster of a built up area, test on a raster where certain elements are removed and test it predictive capacity.
+
+channels : values of land use
+
+* Predicting population from data on the geography of area, and basic socioeconomic data (employment accessibility). The existing data from luti seems good for this king of proof of concept data.
+
+## What are the train, validate and test sets ? 
+
+How to sample an existing large area into small ones that can serve for the training. 
+- sample pixels and their nearest neighbors. 
+
+
+# Autoregression
+
+Generating grid patterns based on conditional probability distributions of states based on already present data. In the case of land use, we get cumulative distributions of a set of features when looking at the whole area and then use this statistics to predict a feature. 
+
+## Loss Function 
+Cross entropy 
+
+
+each pixel in the raster grid is represented by a a vector of 'attributes', for modelling purposes, we can mask one of the attributes and model it, for example population. 
+
+(2*n+1)^2-1
+
+the train set is a tensor of size n_sample x 2n+1 x 2n+1 x 11 if we include the n nearest neighbors. 
+we then mask the input with a n_sample x 2n+1 x 2n+1 tensor based on what we want to predict and train with either a conv net that navigates each sample, or we expand the tensor of nearest neighbor values into a -1 x 11 one and train on it. 
+
+Questions: how to normalize the input ? if we want to predict population values, what do we do ? 
+
+
+
+
+
+
+
+
+
+
+
