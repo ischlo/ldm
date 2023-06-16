@@ -20,7 +20,7 @@ We use as input a set of rasters, each modelling a feature of the
 environment (flood risk, population, slope etc…) covering the region of
 Oxfordshire.
 
-![](presentations/dl_pres/img/rasters.png)
+![](py/inputs_OXF/floodzone1_1000.tiff)
 
 ## Sampling
 

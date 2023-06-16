@@ -8,16 +8,47 @@ import math
 # READ IN THE DATA HERE. 
 
 #  for example by calling the reading rtaters script. 
-
 from py.reading_rasters import data_sets
+
+# print(data_sets)
+
 # copying it into another dictionary that will hold tensors.
 data_sets_t = data_sets.copy()
 
 scale_factors = []
+
+cont_vars = ['slope'
+             ,'population'
+             ,'job1'
+             ,'job2'
+             ,'job3'
+             ,'job4'
+             ,'job5'
+             ,'job6'
+             ,'house1'
+             ,'house2'
+             ,'house3'
+             ,'house4'
+             ,'house5'
+             ,'house6'
+             ]
+
+
 # transforming numpy array into tensors 
 for x in data_sets_t:
+   # normalizing by max
+   # print(x)
    data_sets_t[x] = torch.from_numpy(data_sets_t[x].to_numpy()/data_sets_t[x].to_numpy().max())
+   # # normalizing by mean and std
+   # if x in cont_vars:
+   #    data_sets_t[x] = torch.from_numpy((data_sets_t[x].to_numpy()-data_sets_t[x].to_numpy().mean())/data_sets_t[x].to_numpy().std())
+   # else : 
+   #     data_sets_t[x] = torch.from_numpy(data_sets_t[x].to_numpy())
    # scale_factors.append(data_sets_t[x].to_numpy().max())
+
+
+#  what is the right tensor format ?
+data_tensor = torch.stack(tuple(data_sets_t.values()),-1)
 
 
 #  function that takes as parameter the size of the neighbourhood of a cell to take, 
@@ -45,9 +76,6 @@ def get_input(data,n_neighbors=1):
 
 # could be a simple function that returns the central cell of a neighbourhood as target.  
 # def get_target(data,x,y):
-
-#  what is the right tensor format ?
-data_tensor = torch.stack(tuple(data_sets_t.values()),-1)
 
 # for i in range(0,data_tensor.size(-1)):
 #    print(data_tensor[0,:,:,i].max())
