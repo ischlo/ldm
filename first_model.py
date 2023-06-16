@@ -56,6 +56,7 @@ train_loss , val_loss , epochs = sm.train_seq_model(model=lu_seq
                                                     ,lr=2e-2
                                                     )
 
+
 plt.plot(epochs,val_loss,label='Validation error')
 plt.plot(epochs,train_loss, label='Training error')
 plt.xlabel('epoch')
