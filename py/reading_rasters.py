@@ -1,11 +1,11 @@
-import torch 
+# import torch 
 import rioxarray
 import numpy as np
 import sys
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from matplotlib_scalebar.scalebar import ScaleBar
 sys.path.append('./py')
-import random
+# import random
 from config_OXF import inputs, outputs
 
 ### THIS SCRIPT INITIALIZES THE TENSORS FOR THE LEARNING
@@ -26,10 +26,11 @@ data_sets = {
     # ,
     # 'flood100' : rioxarray.open_rasterio(inputs["Floodzone100"])
     'flood1000' : rioxarray.open_rasterio(inputs["Floodzone1000"])
+    ,'greenspace' : rioxarray.open_rasterio(inputs["greenspace"])
     # ,'bound' : rioxarray.open_rasterio(inputs["OxfordBoundary"])
     # ,'surface_water' : rioxarray.open_rasterio(inputs["SurfaceWater"])
     ,'heritage' : rioxarray.open_rasterio(inputs["HistoricalConservation"])
-    ,'conservation' : rioxarray.open_rasterio(inputs["ConservationArea"])
+    # ,'conservation' : rioxarray.open_rasterio(inputs["ConservationArea"])
     ,'PnG' : rioxarray.open_rasterio(inputs["ParksAndGardens"])
     ,'AONB' : rioxarray.open_rasterio(inputs["AONB"])
     # ,'highway' : rioxarray.open_rasterio(inputs["Highways"])
@@ -42,15 +43,15 @@ data_sets = {
     ,'job1' : rioxarray.open_rasterio(inputs["JobAccessibilityRoads"])
     ,'job2' : rioxarray.open_rasterio(inputs["JobAccessibilityBus"])
     ,'job3' : rioxarray.open_rasterio(inputs["JobAccessibilityRail"])
-    ,'job4' : rioxarray.open_rasterio(inputs["JobAccessibilityRoads2030"])
-    ,'job5' : rioxarray.open_rasterio(inputs["JobAccessibilityBus2030"])
-    ,'job6' : rioxarray.open_rasterio(inputs["JobAccessibilityRail2030"])
+    # ,'job4' : rioxarray.open_rasterio(inputs["JobAccessibilityRoads2030"])
+    # ,'job5' : rioxarray.open_rasterio(inputs["JobAccessibilityBus2030"])
+    # ,'job6' : rioxarray.open_rasterio(inputs["JobAccessibilityRail2030"])
     ,'house1' : rioxarray.open_rasterio(inputs["HousingAccessibilityRoads"])
     ,'house2' : rioxarray.open_rasterio(inputs["HousingAccessibilityBus"])
     ,'house3' : rioxarray.open_rasterio(inputs["HousingAccessibilityRail"])
-    ,'house4' : rioxarray.open_rasterio(inputs["HousingAccessibilityRoads2030"])
-    ,'house5' : rioxarray.open_rasterio(inputs["HousingAccessibilityBus2030"])
-    ,'house6' : rioxarray.open_rasterio(inputs["HousingAccessibilityRail2030"])
+    # ,'house4' : rioxarray.open_rasterio(inputs["HousingAccessibilityRoads2030"])
+    # ,'house5' : rioxarray.open_rasterio(inputs["HousingAccessibilityBus2030"])
+    # ,'house6' : rioxarray.open_rasterio(inputs["HousingAccessibilityRail2030"])
 } 
 
 # print(data_sets['flood1000'])
