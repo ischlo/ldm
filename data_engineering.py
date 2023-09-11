@@ -61,10 +61,12 @@ def sample_cell(data, n_neighbors=1):
    return data[data.size(0)-1,rand_x-n_neighbors:rand_x+n_neighbors+1,rand_y-n_neighbors:rand_y+n_neighbors+1]
 
 def get_cell(data,x,y,n_neighbors=1):
+   '''gets a cell a the specified x and y coordinates as well as the neighbourhood.'''
    return data[0,x-n_neighbors:x+n_neighbors+1,y-n_neighbors:y+n_neighbors+1]
    
 def get_input(data,n_neighbors=1):
-
+   '''generates input data from a 3d tensor for the case when we are considering neighbourhoods.
+   Removes the central element basically that is predicted. '''
    x_i = range(0,data.shape[1])
    y_j = range(0,data.shape[2])
    res = []
@@ -73,6 +75,7 @@ def get_input(data,n_neighbors=1):
          if i!=n_neighbors or j!=n_neighbors:
            res.append(data[:,i,j])
    return torch.stack(res,1).float()
+
 
 # could be a simple function that returns the central cell of a neighbourhood as target.  
 # def get_target(data,x,y):
@@ -86,53 +89,63 @@ def get_input(data,n_neighbors=1):
 # this function takes the data_tensor and divides it into disjoint train, validation and testing data sets
 # size is the fraction of the data to be used for the train set, and half of the rest is taken per other data set
 def generate_data(data, size = .7,n_neighbors = 1):
-    
-   whole,train,test,val = [],[],[],[]
-    
+   '''Generate training, testing, validating data sets.'''
+
+   whole,train,test,val,coords = [],[],[],[],[]
+
    rand_1 = list(range(n_neighbors,data.size(1)-n_neighbors))
    rand_2 = list(range(n_neighbors,data.size(2)-n_neighbors))
-
+   
    random.shuffle(rand_1)
    random.shuffle(rand_2)
 
-   print('entering the train loop')
-   for i in range(0,len(rand_1)):
-      for j in range(0,len(rand_2)):
-         whole.append(get_cell(data,rand_1[i],rand_2[j],n_neighbors))
-         #  train.append(get_cell(data,rand_1[i],rand_2[j],n_neighbors))
+   coords = []# list(zip(rand_1,rand_2))
 
-   size = int(len(whole) * size)
+   # print('entering the train loop')
+   for i in rand_1:
+      for j in rand_2:
+         whole.append(get_cell(data,i,j,n_neighbors))
+         coords.append((i,j))
 
-   if (len(whole)-size)%2 != 0:
-      size-=1
+   if size==1: 
+      whole=torch.stack(whole,0)
+      whole_output = whole[:,n_neighbors,n_neighbors].float()
+      whole_input=get_input(whole,n_neighbors=n_neighbors)
 
-   size_2 = int((len(whole)+size)/2)
+      return whole_input,whole_output, coords
+   elif size<1:
+      size = int(len(whole) * size)
 
-   train = whole[:size]
-   val = whole[size:size_2]
-   test = whole[size_2:len(whole)]
+      if (len(whole)-size)%2 != 0:
+         size-=1
 
-   # print(len(train)/len(whole))
-   # print(len(test)/len(whole))
-   # print(len(val)/len(whole))
-   print(len(whole))
-   
-   train= torch.stack(train,0)
-   val= torch.stack(val,0)
-   test= torch.stack(test,0)
+      size_2 = int((len(whole)+size)/2)
 
-   #  generating the output data
-   train_output = train[:,n_neighbors,n_neighbors].float()
-   val_output = val[:,n_neighbors,n_neighbors].float()
-   test_output = test[:,n_neighbors,n_neighbors].float()
+      train = whole[:size]
+      val = whole[size:size_2]
+      test = whole[size_2:len(whole)]
 
-   print(train.shape)
-   print(val.shape)
-   print(test.shape)
+      coords_dict = {'train_coords' : coords[:size]
+                     ,'val_coords': coords[size:size_2]
+                     ,'test_coords': coords[size_2:len(coords)]
+                     }
 
-   # generating the inputs 
-   train_input = get_input(train, n_neighbors=n_neighbors)
-   val_input = get_input(val, n_neighbors=n_neighbors)
-   test_input = get_input(test, n_neighbors=n_neighbors)
+      train= torch.stack(train,0)
+      val= torch.stack(val,0)
+      test= torch.stack(test,0)
 
-   return train_input, train_output, val_input,val_output,test_input,test_output
+      #  generating the output data
+      train_output = train[:,n_neighbors,n_neighbors].float()
+      val_output = val[:,n_neighbors,n_neighbors].float()
+      test_output = test[:,n_neighbors,n_neighbors].float()
+
+      print('Train set : {}'.format(train.shape))
+      print('Validation set: {}'.format(val.shape))
+      print('Test set: {}'.format(test.shape))
+
+      # generating the inputs 
+      train_input = get_input(train, n_neighbors=n_neighbors)
+      val_input = get_input(val, n_neighbors=n_neighbors)
+      test_input = get_input(test, n_neighbors=n_neighbors)
+
+      return train_input, train_output, val_input,val_output,test_input,test_output, coords_dict
