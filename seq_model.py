@@ -47,14 +47,19 @@ def train_seq_model(model,train_input,train_output, val_input, val_output, batch
     return train_loss, val_loss
 
 
-def seq_model(features, neighbors = 1, nb_hidden=700,drop_rate = .5):
+def seq_model(features, neighbors = 1, nb_hidden=700,drop_rate = .5,**kwargs):
     '''this model contains 1 hidden layer'''
     assert isinstance(neighbors, int) and neighbors >= 1, 'provide positive integer value for neighbors. 1,2 recommended'
     assert isinstance(features, int) and features >= 1, 'provide positive integer value for features'
     assert isinstance(nb_hidden, int) and nb_hidden >= 1, 'provide positive integer value for nb_hidden'
     assert drop_rate < 1 and drop_rate > 0, 'Provide a drop_rate between 0 and 1'
     
-    n_input = ((2*neighbors+1)**2-1)*features
+    n_input = 0
+    if kwargs['constrained']:
+        n_input = ((2*neighbors+1)**2)*kwargs['input_features']
+    else:
+        n_input = ((2*neighbors+1)**2-1)*kwargs['input_features']
+
     model = nn.Sequential(
         nn.Linear(n_input,nb_hidden)
         ,nn.Dropout(.5)
@@ -64,7 +69,7 @@ def seq_model(features, neighbors = 1, nb_hidden=700,drop_rate = .5):
     
     return model
 
-def seq_model_2(features, neighbors = 1, nb_hidden_1=700,nb_hidden_2=700,drop_rate = .5):
+def seq_model_2(features, neighbors = 1, nb_hidden_1=700,nb_hidden_2=700,drop_rate = .5,**kwargs):
     ''' this model contains 2 hidden layers '''
     assert isinstance(neighbors, int) and neighbors >= 1, 'provide positive integer value for neighbors. 1,2 recommended'
     assert isinstance(features, int) and features >= 1, 'provide positive integer value for features'
@@ -72,7 +77,12 @@ def seq_model_2(features, neighbors = 1, nb_hidden_1=700,nb_hidden_2=700,drop_ra
     assert isinstance(nb_hidden_2, int) and nb_hidden_2 >= 1, 'provide positive integer value for nb_hidden_2'
     assert drop_rate < 1 and drop_rate > 0, 'Provide a drop_rate between 0 and 1'
     
-    n_input = ((2*neighbors+1)**2-1)*features
+    n_input = 0
+    if kwargs['constrained']:
+        n_input = ((2*neighbors+1)**2)*kwargs['input_features']
+    else:
+        n_input = ((2*neighbors+1)**2-1)*kwargs['input_features']
+        
     model = nn.Sequential(
         nn.Linear(n_input,nb_hidden_1,bias=True)
         ,nn.Dropout(drop_rate)

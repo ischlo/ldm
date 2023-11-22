@@ -68,8 +68,9 @@ def cell_diversity(data, neighborhood = 3):
 
 # test = cell_diversity(data=data_tensor,neighborhood=3)
 
-# plot_raster(test
-#             ,title='Diversity of land use values, n=3')
+plot_raster(data_sets_t['Education']
+            ,title='Diversity of land use values, n=3'
+            ,dim=-1)
 
 
 # areas of interest contains the boundaries of the rectangles considered as 

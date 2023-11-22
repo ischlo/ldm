@@ -19,6 +19,7 @@ var_names = list(data_sets_t.keys())
 print('Variables used: ', var_names)
 
 features=len(var_names)
+const=False
 
 print('Training based on ', features,' features.')
 
@@ -32,36 +33,49 @@ def sub_area(data, area):
     bounds = areas_of_interest[area]
     return data[:,bounds[2]:bounds[3],bounds[0]:bounds[1],:]
 
-area_data = sub_area(data_tensor, 'third')
+area_data = sub_area(data_tensor, 'first')
+
+# area_data = data_tensor
 # print('The shape of the training output is : ',train_output.shape)
 # print('The shape of the validation output is : ',val_output.shape)
-
 # plot_raster(cell_diversity(area_data,neighborhood=1),title='Diversity of area',dim=-1)
 
 # parameters
 
 nb_hidden= 900
-epochs = 150
-batch_train = 1
+epochs = 50
+batch_train = 2
 batch_val = 1
-nb_layers = 1
+nb_layers = 2
 neighbors = 1
 
 # Formating the train, validation, test data. 
 
-train_input, train_output, val_input, val_output, test_input, test_output, coords = de.generate_data(area_data,n_neighbors=neighbors,size=.9)
+constraints = ['flood100','greenspace','surface_water','conservation','PnG','AONB','slope','highway','nature_reserves']
 
-# train_input.shape
+if len(constraints):
+    const=True
+    features=features-len(constraints)
+
+train_input, train_output, val_input, val_output, test_input, test_output, coords = de.generate_data(area_data
+                                                                                                     ,n_neighbors=neighbors
+                                                                                                     ,size=.9
+                                                                                                     ,constraint_keys=constraints)
+
+train_input.shape
+train_output.shape
+val_input.shape
+
 
 if nb_layers==1 :
     print('Using model with 1 hidden layer')
-    lu_seq = sm.seq_model(features=features,neighbors=neighbors,nb_hidden=nb_hidden)
+    lu_seq = sm.seq_model(features=features,neighbors=neighbors,nb_hidden=nb_hidden, constrained = True, input_features = len(constraints))
 elif nb_layers==2 :
     print('Using model with 2 hidden layers')
-    lu_seq = sm.seq_model_2(features=features,neighbors=neighbors,nb_hidden_1=nb_hidden,nb_hidden_2=nb_hidden,drop_rate=.5)
+    lu_seq = sm.seq_model_2(features=features,neighbors=neighbors,nb_hidden_1=nb_hidden,nb_hidden_2=nb_hidden,drop_rate=.5,constrained = True, input_features = len(constraints))
 else : 
     print('Incorrectly provided number of hidden layers, using 1')
-    lu_seq = sm.seq_model(features=features,neighbors=neighbors,nb_hidden=nb_hidden)
+    lu_seq = sm.seq_model(features=features,neighbors=neighbors,nb_hidden=nb_hidden, constrained = True, input_features = len(constraints))
 
 train_loss,val_loss = sm.train_seq_model(model=lu_seq
                                          ,train_input=train_input
