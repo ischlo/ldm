@@ -30,6 +30,10 @@ inputs["JobAccessibilityRail2030"]      = "inputs_OXF/job_accessibility_rail_203
 inputs["HousingAccessibilityRoads2030"] = "inputs_OXF/house_accessibility_road_2030.tif"
 inputs["HousingAccessibilityBus2030"]   = "inputs_OXF/house_accessibility_bus_2030.tif"
 inputs["HousingAccessibilityRail2030"]  = "inputs_OXF/house_accessibility_rail_2030.tif"
+inputs["Education"] = "inputs_OXF/education.tif"
+inputs["Healthcare"] = "inputs_OXF/healthcare.tif"
+inputs["Public_service"] = "inputs_OXF/public_service.tif"
+inputs["Sustenance"] = "inputs_OXF/sustenance.tif"
 
 outputs = {}
 
